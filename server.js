@@ -3,32 +3,42 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
-const authRoutes = require("./routes/authRoutes");
-const taskRoutes = require("./routes/tasks"); // ✅ This is correct
-
-const adminRoutes = require("./routes/adminRoutes"); // or your actual path
-
-
-// require("dotenv").config();
+// Load environment variables from .env
 dotenv.config();
+
+// Route imports
+const authRoutes = require("./routes/authRoutes");
+const taskRoutes = require("./routes/tasks");
+const adminRoutes = require("./routes/adminRoutes");
+
 const app = express();
 
+// Middleware
 app.use(cors({
-    origin: "http://localhost:5173", // ✅ allow frontend origin
-    credentials: true, // ✅ if you send cookies/token
-  }));
+  origin: "http://localhost:5173",  // Frontend URL
+  credentials: true
+}));
 app.use(express.json());
 
-app.use("/api/admin", adminRoutes); // ✅ THIS IS MANDATORY
+// Routes
+app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB connected");
-    app.listen(process.env.PORT || 5000, () =>
-      console.log(`🚀 Server running on ${process.env.PORT || 5000}`)
-    );
-  })
-  .catch((err) => console.error("MongoDB connection error:", err));
+// Debug: Show loaded Mongo URI (remove in production)
+console.log("MONGO_URI:", process.env.MONGO_URI);
+
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => {
+  console.log("✅ MongoDB connected");
+  app.listen(process.env.PORT || 5000, () => {
+    console.log(`🚀 Server running on port ${process.env.PORT || 5000}`);
+  });
+})
+.catch((err) => {
+  console.error("❌ MongoDB connection error:", err.message);
+});
