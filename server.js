@@ -22,9 +22,9 @@ app.use(express.json());
 
 
 // root Api
-app.get("/", (req, res) => {
-  res.send("Welcome to the API! 🎉");
-});
+// app.get("/", (req, res) => {
+//   res.send("Welcome to the API! 🎉");
+// });
 
 // Routes
 app.use("/api/admin", adminRoutes);
