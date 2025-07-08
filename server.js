@@ -20,6 +20,12 @@ app.use(cors({
 }));
 app.use(express.json());
 
+
+// root Api
+app.get("/", (req, res) => {
+  res.send("Welcome to the API! 🎉");
+});
+
 // Routes
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
